@@ -1,6 +1,5 @@
+
 const { users } = require('../model/userModel');
-const crypto = require('crypto');
-const tokens = {};
 
 function registerUser({ username, password, favorecidos = [] }) {
   if (users.find(u => u.username === username)) {
@@ -16,17 +15,10 @@ function loginUser({ username, password }) {
   if (!user) {
     throw new Error('Login ou senha inválidos');
   }
-  // Gera um token simples (não seguro, apenas para fins didáticos)
-  const token = crypto.randomBytes(16).toString('hex');
-  tokens[token] = username;
-  return { user, token };
+  return user;
 }
 
-function authenticate(token) {
-  const username = tokens[token];
-  if (!username) throw new Error('Token inválido ou ausente');
-  return getUser(username);
-}
+
 
 function getUsers() {
   return users;
@@ -39,7 +31,6 @@ function getUser(username) {
 module.exports = {
   registerUser,
   loginUser,
-  authenticate,
   getUsers,
   getUser,
 };

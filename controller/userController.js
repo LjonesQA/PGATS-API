@@ -19,11 +19,5 @@ exports.login = (req, res) => {
 };
 
 exports.getUsers = (req, res) => {
-  try {
-    const token = req.headers['authorization'];
-    userService.authenticate(token);
-    res.json(userService.getUsers());
-  } catch (err) {
-    res.status(401).json({ error: err.message });
-  }
+  res.json(userService.getUsers());
 };

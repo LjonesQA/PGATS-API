@@ -11,9 +11,29 @@ const app = require('../../app')
 describe('Transfer controller',()=>{
     describe('POST /tansfers',()=>{
         it('Quando uso dados validos o retorno é 201',async ()=>{
-            const resposta = await request(app).post('/transfer')
-        })
-    }),
+            const resposta = await request(app)
+                .post('/transfer')
+                .send({
+                    from: "user1",
+                    to: "user2",
+                    value: 100
+                });
+            // ...pode adicionar asserts aqui se desejar
+        });
+
+        it.only('Retorna erro ao tentar transferir de usuário inexistente', async () => {
+            const resposta = await request(app)
+                .post('/transfer')
+                .send({
+                    from: "naoexiste",
+                    to: "outroinexistente",
+                    value: 100
+                });
+            expect(resposta.status).to.equal(400);
+            expect(resposta.body).to.have.property('error');
+            expect(resposta.body.error).to.match(/Remetente ou destinatário inválido/i);
+        });
+    });
     describe('GET /transfers',()=>{
 
     })
