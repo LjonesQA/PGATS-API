@@ -5,16 +5,7 @@
     "version": "1.0.0",
     "description": "API para login, registro, consulta de usuários e transferências."
   },
-  "components": {
-    "securitySchemes": {
-      "ApiTokenAuth": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "authorization"
-      }
-    }
-  },
-  "security": [{ "ApiTokenAuth": [] }],
+  "paths": {
   "paths": {
     "/register": {
       "post": {
@@ -71,17 +62,14 @@
     "/users": {
       "get": {
         "summary": "Consultar usuários",
-        "security": [{ "ApiTokenAuth": [] }],
         "responses": {
-          "200": { "description": "Lista de usuários" },
-          "401": { "description": "Token inválido ou ausente" }
+          "200": { "description": "Lista de usuários" }
         }
       }
     },
     "/transfer": {
       "post": {
         "summary": "Realizar transferência",
-        "security": [{ "ApiTokenAuth": [] }],
         "requestBody": {
           "required": true,
           "content": {
@@ -100,20 +88,18 @@
         },
         "responses": {
           "201": { "description": "Transferência realizada" },
-          "400": { "description": "Erro na transferência" },
-          "401": { "description": "Token inválido ou ausente" }
+          "400": { "description": "Erro na transferência" }
         }
       }
     },
     "/transfers": {
       "get": {
         "summary": "Consultar transferências",
-        "security": [{ "ApiTokenAuth": [] }],
         "responses": {
-          "200": { "description": "Lista de transferências" },
-          "401": { "description": "Token inválido ou ausente" }
+          "200": { "description": "Lista de transferências" }
         }
       }
     }
   }
+}
 }
