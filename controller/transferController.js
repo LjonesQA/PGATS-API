@@ -1,18 +1,24 @@
+const express = require('express');
+const router = express.Router();
 const transferService = require('../service/transferService');
 
-exports.transfer = (req, res) => {
+// POST /transfer - Cria uma nova transferência
+router.post('/', (req, res) => {
   try {
     const transfer = transferService.transferValue(req.body);
     res.status(201).json(transfer);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
-};
+});
 
-exports.getTransfers = (req, res) => {
+// GET /transfer - Lista todas as transferências
+router.get('/', (req, res) => {
   try {
     res.json(transferService.getTransfers());
   } catch (err) {
-    res.status(401).json({ error: err.message });
+    res.status(400).json({ error: err.message });
   }
-};
+});
+
+module.exports = router;
