@@ -11,7 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chai": "^5.2.1",
     "express": "^5.1.0",
+    "mocha": "^11.7.1",
+    "sinon": "^21.0.0",
+    "supertest": "^7.1.4",
     "swagger-ui-express": "^5.0.1"
   }
 }

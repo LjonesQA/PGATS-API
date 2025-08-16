@@ -1,3 +1,14 @@
+# Bibliotecas Utilizadas
+
+As seguintes bibliotecas estão instaladas neste projeto:
+
+- express
+- swagger-ui-express
+- mocha
+- chai
+- sinon
+- supertest
+
 # API de Transferências
 
 Esta API permite realizar operações de registro, login, consulta de usuários e transferências de valores entre usuários, com regras básicas de negócio. O objetivo é servir de base para aprendizado de testes e automação de APIs.
