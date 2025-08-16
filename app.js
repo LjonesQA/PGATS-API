@@ -1,6 +1,6 @@
 const express = require('express');
-const userController = require('./controller/userController');
-const transferController = require('./controller/transferController');
+const userRouter = require('./controller/userController');
+const transferRouter = require('./controller/transferController');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 
@@ -10,13 +10,11 @@ app.use(express.json());
 // Swagger endpoint
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+
 // User endpoints
-app.post('/register', userController.register);
-app.post('/login', userController.login);
-app.get('/users', userController.getUsers);
+app.use('/', userRouter);
 
 // Transfer endpoints
-app.post('/transfer', transferController.transfer);
-app.get('/transfers', transferController.getTransfers);
+app.use('/transfer', transferRouter);
 
 module.exports = app;
