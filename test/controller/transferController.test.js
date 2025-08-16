@@ -6,7 +6,8 @@ const { expect } = require('chai') //Aqui fica a bilioteca responsavel para faze
 //Apçicação
 const app = require('../../app')
 
-// testes sem mock
+//Mock
+const transferService = require('../../service/transferService')
 
 describe('Transfer controller',()=>{
     describe('POST /tansfers',()=>{
@@ -20,7 +21,7 @@ describe('Transfer controller',()=>{
                 });
             // ...pode adicionar asserts aqui se desejar
         });
-
+        // testes sem mock
         it.only('Retorna erro ao tentar transferir de usuário inexistente', async () => {
             const resposta = await request(app)
                 .post('/transfer')
@@ -32,6 +33,27 @@ describe('Transfer controller',()=>{
             expect(resposta.status).to.equal(400);
             expect(resposta.body).to.have.property('error');
             expect(resposta.body.error).to.match(/Remetente ou destinatário inválido/i);
+        });
+
+        // testes com mock
+            //Mocar apenas a função transferValue do Service 
+        const transferServiceMock = sinon.stub(transferService,'transferValue')
+        transferServiceMock.throws(new Error('Remetente ou destinatário inválido'))
+
+        it.only('Retorna erro ao tentar transferir de usuário inexistente MOCADO', async () => {
+            const resposta = await request(app)
+                .post('/transfer')
+                .send({
+                    from: "naoexiste",
+                    to: "outroinexistente",
+                    value: 100
+                });
+            expect(resposta.status).to.equal(400);
+            expect(resposta.body).to.have.property('error');
+            expect(resposta.body.error).to.match(/Remetente ou destinatário inválido/i);
+            
+            //resetar o Mock
+            sinon.restore();    
         });
     });
     describe('GET /transfers',()=>{
