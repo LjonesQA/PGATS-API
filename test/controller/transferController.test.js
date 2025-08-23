@@ -10,19 +10,41 @@ const app = require('../../app')
 const transferService = require('../../service/transferService')
 
 describe('Transfer controller',()=>{
-    describe('POST /tansfers',()=>{
+    describe('POST /transfer',()=>{
+        afterEach(() => {
+            sinon.restore();
+        });
+
         it('Quando uso dados validos o retorno é 201',async ()=>{
+            const transferServiceMock = sinon.stub(transferService,'transferValue');
+            transferServiceMock.returns({ 
+                from:"Lucas", 
+                to:"test",
+                value:2000,
+                date: new Date() });
+
             const resposta = await request(app)
                 .post('/transfer')
                 .send({
-                    from: "user1",
-                    to: "user2",
-                    value: 100
+                    from: "Lucas",
+                    to: "test",
+                    value: 2000
                 });
-            // ...pode adicionar asserts aqui se desejar
+
+            // expect(resposta.status).to.equal(201);
+            // expect(resposta.body).to.have.property('from', 'Lucas');
+            // expect(resposta.body).to.have.property('to', 'test');
+            // expect(resposta.body).to.have.property('value', 2000);    
+
+            //Validação com uma fixture
+            const expectedResponse = require('../fixture/quandoInformoValoresValidos.json');
+           delete expectedResponse.date; // Remover a propriedade date para comparação
+           delete resposta.body.date; // Remover a propriedade date para comparação
+            expect(resposta.body).to.deep.equal(expectedResponse);
         });
-        // testes sem mock
-        it.only('Retorna erro ao tentar transferir de usuário inexistente', async () => {
+
+        it('Retorna erro ao tentar transferir de usuário inexistente', async () => {
+            // Não faz mock, usa implementação real
             const resposta = await request(app)
                 .post('/transfer')
                 .send({
@@ -35,12 +57,10 @@ describe('Transfer controller',()=>{
             expect(resposta.body.error).to.match(/Remetente ou destinatário inválido/i);
         });
 
-        // testes com mock
-            //Mocar apenas a função transferValue do Service 
-        const transferServiceMock = sinon.stub(transferService,'transferValue')
-        transferServiceMock.throws(new Error('Remetente ou destinatário inválido'))
+        it('Retorna erro ao tentar transferir de usuário inexistente MOCADO', async () => {
+            const transferServiceMock = sinon.stub(transferService,'transferValue');
+            transferServiceMock.throws(new Error('Remetente ou destinatário inválido'));
 
-        it.only('Retorna erro ao tentar transferir de usuário inexistente MOCADO', async () => {
             const resposta = await request(app)
                 .post('/transfer')
                 .send({
@@ -51,9 +71,6 @@ describe('Transfer controller',()=>{
             expect(resposta.status).to.equal(400);
             expect(resposta.body).to.have.property('error');
             expect(resposta.body.error).to.match(/Remetente ou destinatário inválido/i);
-            
-            //resetar o Mock
-            sinon.restore();    
         });
     });
     describe('GET /transfers',()=>{
