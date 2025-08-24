@@ -1,5 +1,5 @@
 //Bibliotecas
-const request = require('supertest')//Importante sabe rque ele faz requisições assicronas
+const request = require('supertest')//Importante saber que ele faz requisições assicronas
 const sinon = require ('sinon')
 const { expect } = require('chai') //Aqui fica a bilioteca responsavel para fazer validações ( asserts)
 
@@ -15,7 +15,7 @@ describe('Transfer controller',()=>{
             sinon.restore();
         });
 
-        it('Quando uso dados validos o retorno é 201',async ()=>{
+        it('Quando uso dados validos o retorno é 201- MOCADO',async ()=>{
             const transferServiceMock = sinon.stub(transferService,'transferValue');
             transferServiceMock.returns({ 
                 from:"Lucas", 
@@ -37,13 +37,13 @@ describe('Transfer controller',()=>{
             // expect(resposta.body).to.have.property('value', 2000);    
 
             //Validação com uma fixture
-            const expectedResponse = require('../fixture/quandoInformoValoresValidos.json');
+            const expectedResponse = require('../fixture/quandoInformoValoresValidos.json')//Importa o arquivo json;
            delete expectedResponse.date; // Remover a propriedade date para comparação
            delete resposta.body.date; // Remover a propriedade date para comparação
             expect(resposta.body).to.deep.equal(expectedResponse);
         });
 
-        it('Retorna erro ao tentar transferir de usuário inexistente', async () => {
+        it.only('Retorna erro ao tentar transferir sem Token-Controller', async () => {
             // Não faz mock, usa implementação real
             const resposta = await request(app)
                 .post('/transfer')
@@ -52,12 +52,13 @@ describe('Transfer controller',()=>{
                     to: "outroinexistente",
                     value: 100
                 });
-            expect(resposta.status).to.equal(400);
+            expect(resposta.status).to.equal(401);
             expect(resposta.body).to.have.property('error');
-            expect(resposta.body.error).to.match(/Remetente ou destinatário inválido/i);
+            expect(resposta.body.error).to.have.property('message');
+            expect(resposta.body.error.message).to.match(/Token não fornecido/i);
         });
 
-        it('Retorna erro ao tentar transferir de usuário inexistente MOCADO', async () => {
+        it('Retorna erro ao tentar transferir de usuário inexistente - MOCADO', async () => {
             const transferServiceMock = sinon.stub(transferService,'transferValue');
             transferServiceMock.throws(new Error('Remetente ou destinatário inválido'));
 
@@ -70,7 +71,8 @@ describe('Transfer controller',()=>{
                 });
             expect(resposta.status).to.equal(400);
             expect(resposta.body).to.have.property('error');
-            expect(resposta.body.error).to.match(/Remetente ou destinatário inválido/i);
+            expect(resposta.body.error).to.have.property('message');
+            expect(resposta.body.error.message).to.match(/Remetente ou destinatário inválido/i);
         });
     });
     describe('GET /transfers',()=>{

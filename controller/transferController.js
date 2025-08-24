@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const transferService = require('../service/transferService');
+const { authToken } = require('../middleware/authToken');
 
-// POST /transfer - Cria uma nova transferência
-router.post('/', (req, res) => {
+// POST /transfer - Cria uma nova transferência (protegida)
+router.post('/', authToken, (req, res) => {
   try {
     const transfer = transferService.transferValue(req.body);
     res.status(201).json(transfer);
@@ -12,8 +13,8 @@ router.post('/', (req, res) => {
   }
 });
 
-// GET /transfer - Lista todas as transferências
-router.get('/', (req, res) => {
+// GET /transfer - Lista todas as transferências (protegida)
+router.get('/', authToken, (req, res) => {
   try {
     res.json(transferService.getTransfers());
   } catch (err) {
