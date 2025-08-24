@@ -22,5 +22,24 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Run tests
-      run: npm test
+    - name: Run controller tests
+      run: npm run test-controller
+    
+    - name: Start the application 
+      run: npm start & 
+
+    - name: Wait for the application to be ready
+      run: |
+        for i in {1..10}; do
+          if curl -s http://localhost:3000; then
+            echo "Application is ready"
+            break
+          else
+            echo "Waiting for application to be ready..."
+            sleep 5
+          fi
+        done
+
+    - name: Run external tests
+      run: npm run test-external
+    
