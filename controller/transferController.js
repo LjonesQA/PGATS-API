@@ -9,7 +9,7 @@ router.post('/', authToken, (req, res) => {
     const transfer = transferService.transferValue(req.body);
     res.status(201).json(transfer);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ error: { message: err.message } });
   }
 });
 
@@ -18,7 +18,7 @@ router.get('/', authToken, (req, res) => {
   try {
     res.json(transferService.getTransfers());
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ error: { message: err.message } });
   }
 });
 

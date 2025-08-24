@@ -5,7 +5,21 @@ const { expect } = require('chai'); //Aqui fica a biblioteca responsável para f
 //Aplicação
 describe('Transfer controller- External',()=>{
     describe('POST /transfer',()=>{
-        it('Retorna erro ao tentar transferir sem token ', async () => {
+        //Captura o token
+        it('Quando informo senha e password corretamente',async ()=>{
+            const respostaLogin = await request('http://localhost:3000') //Aqui colocamos a url da aplicação que está rodando externamente
+                .post('/login')
+                .send({
+                    username: "Lucas",
+                    password: "123456"
+                }); 
+            const token = respostaLogin.body.token;
+            expect(respostaLogin.status).to.equal(200);
+            expect(respostaLogin.body).to.have.property('token');
+        });
+
+
+        it('Retorna erro ao tentar transferir sem token ', async () => {        
 
             const resposta = await request('http://localhost:3000') //Aqui colocamos a url da aplicação que está rodando externamente
                 .post('/transfer')
@@ -19,6 +33,8 @@ describe('Transfer controller- External',()=>{
             expect(resposta.body.error).to.have.property('message');
             expect(resposta.body.error.message).to.match(/Token não fornecido/i);
         });
+
+        
 
     })
 })

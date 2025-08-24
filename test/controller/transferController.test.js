@@ -4,6 +4,13 @@ const sinon = require ('sinon')
 const { expect } = require('chai') //Aqui fica a bilioteca responsavel para fazer validações ( asserts)
 
 //Apçicação
+// Função utilitária para obter token de autenticação
+async function getAuthToken(app, username = "Lucas", password = "123456") {
+    const respostaLogin = await request(app)
+        .post('/login')
+        .send({ username, password });
+    return respostaLogin.body.token;
+}
 const app = require('../../app')
 
 //Mock
@@ -13,9 +20,22 @@ describe('Transfer controller',()=>{
     describe('POST /transfer',()=>{
         afterEach(() => {
             sinon.restore();
+            
+        });
+
+        it('Quando informo senha e password corretamente',async ()=>{
+            const respostaLogin = await request(app)
+                .post('/login')
+                .send({ username: "Lucas", password: "123456" });
+            expect(respostaLogin.status).to.equal(200);
+            expect(respostaLogin.body).to.have.property('token');
         });
 
         it('Quando uso dados validos o retorno é 201- MOCADO',async ()=>{
+            //Captura o token
+            const token = await getAuthToken(app);
+            
+            //Mock do serviço de transferência
             const transferServiceMock = sinon.stub(transferService,'transferValue');
             transferServiceMock.returns({ 
                 from:"Lucas", 
@@ -25,25 +45,21 @@ describe('Transfer controller',()=>{
 
             const resposta = await request(app)
                 .post('/transfer')
+                .set('Authorization', `Bearer ${token}`)
                 .send({
                     from: "Lucas",
                     to: "test",
                     value: 2000
                 });
 
-            // expect(resposta.status).to.equal(201);
-            // expect(resposta.body).to.have.property('from', 'Lucas');
-            // expect(resposta.body).to.have.property('to', 'test');
-            // expect(resposta.body).to.have.property('value', 2000);    
-
             //Validação com uma fixture
-            const expectedResponse = require('../fixture/quandoInformoValoresValidos.json')//Importa o arquivo json;
-           delete expectedResponse.date; // Remover a propriedade date para comparação
-           delete resposta.body.date; // Remover a propriedade date para comparação
+            const expectedResponse = require('../fixture/quandoInformoValoresValidos.json');
+            delete expectedResponse.date;
+            delete resposta.body.date;
             expect(resposta.body).to.deep.equal(expectedResponse);
         });
 
-        it.only('Retorna erro ao tentar transferir sem Token-Controller', async () => {
+        it('Retorna erro ao tentar transferir sem Token-Controller', async () => {
             // Não faz mock, usa implementação real
             const resposta = await request(app)
                 .post('/transfer')
@@ -59,16 +75,22 @@ describe('Transfer controller',()=>{
         });
 
         it('Retorna erro ao tentar transferir de usuário inexistente - MOCADO', async () => {
+            const token = await getAuthToken(app);
+           
+            //Mock do serviço de transferência
             const transferServiceMock = sinon.stub(transferService,'transferValue');
             transferServiceMock.throws(new Error('Remetente ou destinatário inválido'));
-
+            // Chamada real ao endpoint com token válido
             const resposta = await request(app)
                 .post('/transfer')
+                .set('Authorization', `Bearer ${token}`)
                 .send({
                     from: "naoexiste",
                     to: "outroinexistente",
                     value: 100
                 });
+
+                
             expect(resposta.status).to.equal(400);
             expect(resposta.body).to.have.property('error');
             expect(resposta.body.error).to.have.property('message');

@@ -11,8 +11,13 @@ function registerUser({ username, password, favorecidos = [] }) {
 }
 
 function loginUser({ username, password }) {
-  const user = users.find(u => u.username === username && u.password === password);
+  const user = users.find(u => u.username === username);
   if (!user) {
+    throw new Error('Login ou senha inválidos');
+  }
+  const bcrypt = require('bcryptjs');
+  const passwordMatch = bcrypt.compareSync(password, user.password);
+  if (!passwordMatch) {
     throw new Error('Login ou senha inválidos');
   }
   return user;
