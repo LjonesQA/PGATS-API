@@ -10,7 +10,7 @@ router.post('/register', (req, res) => {
     const user = userService.registerUser(req.body);
     res.status(201).json(user);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(400).json({ error: { message: err.message } });
   }
 });
 
@@ -22,7 +22,7 @@ router.post('/login', (req, res) => {
     const token = jwt.sign({ username: user.username }, SECRET, { expiresIn: '1h' });
     res.status(200).json({ user, token });
   } catch (err) {
-    res.status(401).json({ error: err.message });
+    res.status(401).json({ error: { message: err.message } });
   }
 });
 

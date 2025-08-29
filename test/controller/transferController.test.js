@@ -1,3 +1,5 @@
+//No controleler podemos usar sinon para mockar o serviço, pois não queremos depender do serviço e ele bate direto na API
+
 //Bibliotecas
 const request = require('supertest')//Importante saber que ele faz requisições assicronas
 const sinon = require ('sinon')
@@ -23,7 +25,7 @@ describe('Transfer controller',()=>{
             
         });
 
-        it('Quando informo senha e password corretamente',async ()=>{
+        it('01- Quando informo senha e password corretamente',async ()=>{
             const respostaLogin = await request(app)
                 .post('/login')
                 .send({ username: "Lucas", password: "123456" });
@@ -31,7 +33,7 @@ describe('Transfer controller',()=>{
             expect(respostaLogin.body).to.have.property('token');
         });
 
-        it('Quando uso dados validos o retorno é 201- MOCADO',async ()=>{
+        it('02- Quando uso dados validos o retorno é 201- MOCADO',async ()=>{
             //Captura o token
             const token = await getAuthToken(app);
             
@@ -54,12 +56,12 @@ describe('Transfer controller',()=>{
 
             //Validação com uma fixture
             const expectedResponse = require('../fixture/quandoInformoValoresValidos.json');
-            delete expectedResponse.date;
+            delete expectedResponse[0].date;
             delete resposta.body.date;
-            expect(resposta.body).to.deep.equal(expectedResponse);
+            expect(resposta.body).to.deep.equal(expectedResponse[0]);
         });
 
-        it('Retorna erro ao tentar transferir sem Token-Controller', async () => {
+        it('03- Retorna erro ao tentar transferir sem Token-Controller', async () => {
             // Não faz mock, usa implementação real
             const resposta = await request(app)
                 .post('/transfer')
@@ -74,7 +76,7 @@ describe('Transfer controller',()=>{
             expect(resposta.body.error.message).to.match(/Token não fornecido/i);
         });
 
-        it('Retorna erro ao tentar transferir de usuário inexistente - MOCADO', async () => {
+        it('04- Retorna erro ao tentar transferir de usuário inexistente - MOCADO', async () => {
             const token = await getAuthToken(app);
            
             //Mock do serviço de transferência
