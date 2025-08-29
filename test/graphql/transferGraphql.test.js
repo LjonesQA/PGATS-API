@@ -18,7 +18,7 @@ describe('GraphQL Transfer Mutation', () => {
   it('01- Transferência com sucesso', async () => {
     const token = await getAuthToken();
     const mutation = {
-      query: `mutation {\n  createTransfer(from: \"Lucas\", to: \"Maria\", value: 1000) {\n    from\n    to\n    value\n    date\n  }\n}`
+      query: `mutation {\n  createTransfer(from: \"Lucas\", to: \"Maria\", value: 1000) {\n    from\n    to\n    value}\n}`
     };
     const res = await request(external)
       .post('/graphql')
