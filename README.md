@@ -34,6 +34,15 @@ Acesse em: `http://localhost:4000/graphql`
 - `transfers: [Transfer]` — Lista todas as transferências.
 - `createTransfer(from, to, value): Transfer` — Cria transferência (requer autenticação JWT).
 
+
+### Testes GraphQL
+
+Para rodar os testes automatizados da API GraphQL (é necessário que o servidor GraphQL esteja rodando):
+```powershell
+npm run test-graphql
+```
+O relatório será gerado na pasta `mochawesome-report`.
+
 ### Autenticação
 
 Após o login, será retornado um token JWT. Para acessar mutations protegidas, envie o token no header:

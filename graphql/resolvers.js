@@ -20,7 +20,12 @@ const resolvers = {
     },
     createTransfer: (_, { from, to, value }, context) => {
       if (!context.user) throw new Error('Token não fornecido');
-      return transferService.transferValue({ from, to, value });
+      try {
+        return transferService.transferValue({ from, to, value });
+      } catch (e) {
+        // Retorna erro GraphQL amigável
+        throw new Error(e.message);
+      }
     },
   },
 };
