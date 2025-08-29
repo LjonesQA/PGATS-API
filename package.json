@@ -4,9 +4,9 @@
   "description": "Esta API permite realizar operações de registro, login, consulta de usuários e transferências de valores entre usuários, com regras básicas de negócio. O objetivo é servir de base para aprendizado de testes e automação de APIs.",
   "main": "app.js",
   "scripts": {
-    "test-external": "mocha --timeout 10000 \"test/external/**/*.js\"",
-    "test-controller": "mocha --timeout 10000 \"test/controller/**/*.js\"",
-    "test": "mocha --timeout 10000 \"test/**/*.js\"",
+    "test-external": "mocha --timeout 10000 \"test/external/**/*.js\" --reporter mochawesome",
+    "test-controller": "mocha --timeout 10000 \"test/controller/**/*.js\" --reporter mochawesome ",
+    "test": "mocha --timeout 10000 \"test/**/*.js\" --reporter mochawesome",
     "start": "node server.js"
   },
   "keywords": [],
@@ -21,5 +21,8 @@
     "sinon": "^21.0.0",
     "supertest": "^7.1.4",
     "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "mochawesome": "^7.1.3"
   }
 }
