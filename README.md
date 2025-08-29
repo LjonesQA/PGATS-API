@@ -9,9 +9,39 @@ As seguintes bibliotecas estão instaladas neste projeto:
 - sinon
 - supertest
 
+
 # API de Transferências
 
 Esta API permite realizar operações de registro, login, consulta de usuários e transferências de valores entre usuários, com regras básicas de negócio. O objetivo é servir de base para aprendizado de testes e automação de APIs.
+
+Agora também expõe uma interface GraphQL, permitindo realizar as mesmas operações via queries e mutations, com autenticação JWT nas mutations sensíveis.
+
+## API GraphQL
+
+### Execução
+
+Para iniciar o servidor GraphQL:
+```powershell
+node graphql/server.js
+```
+Acesse em: `http://localhost:4000/graphql`
+
+### Operações Principais
+
+- `login(username, password): AuthPayload` — Realiza login e retorna token JWT.
+- `users: [User]` — Lista todos os usuários.
+- `user(username): User` — Consulta usuário por username.
+- `transfers: [Transfer]` — Lista todas as transferências.
+- `createTransfer(from, to, value): Transfer` — Cria transferência (requer autenticação JWT).
+
+### Autenticação
+
+Após o login, será retornado um token JWT. Para acessar mutations protegidas, envie o token no header:
+```
+authorization: Bearer <token>
+```
+
+---
 
 ## Instalação
 
