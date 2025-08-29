@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test-external": "mocha --timeout 10000 \"test/external/**/*.js\" --reporter mochawesome",
-    "test-controller": "mocha --timeout 10000 \"test/controller/**/*.js\" -- reporter mochawesome ",
+    "test-controller": "mocha --timeout 10000 \"test/controller/**/*.js\" --reporter mochawesome ",
     "test": "mocha --timeout 10000 \"test/**/*.js\" --reporter mochawesome",
     "start": "node server.js"
   },
