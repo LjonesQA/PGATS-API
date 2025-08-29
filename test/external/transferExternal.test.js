@@ -17,7 +17,7 @@ async function getAuthToken(app, username = "Lucas", password = "123456") {
 }
 
 //Aplicação
-describe('Transfer controller- External',()=>{
+describe('Transfer External',()=>{
     describe('POST /transfer',()=>{
         //Captura o token
         it('Quando informo senha e password corretamente',async ()=>{
